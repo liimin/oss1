@@ -1,46 +1,34 @@
 <template>
   <el-menu class="navbar" mode="horizontal">
-    <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
-    <breadcrumb></breadcrumb>
-    <el-dropdown class="avatar-container" trigger="click">
-      <div class="avatar-wrapper">
-        <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">
-        <i class="el-icon-caret-bottom"></i>
-      </div>
-      <el-dropdown-menu class="user-dropdown" slot="dropdown">
-        <router-link class="inlineBlock" to="/">
-          <el-dropdown-item>
-            Home
-          </el-dropdown-item>
-        </router-link>
-        <el-dropdown-item divided>
-          <span @click="logout" style="display:block;">LogOut</span>
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
-  </el-menu>
+    <div class="nav-left">
+      <logo></logo>
+    </div>
+    <div class="nav-right">
+       <div class="avatar-wrap">
+          <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">
+          <el-tag>{{name}}</el-tag>
+        </div>
+        <span @click="logout()"><svg-icon icon-class="logout" class-name="logOut" /></span>
+    </div>
+    </el-menu>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
+import Logo from '@/components/Logo'
 
 export default {
   components: {
-    Breadcrumb,
-    Hamburger
+    Logo
   },
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'name'
     ])
   },
   methods: {
-    toggleSideBar() {
-      this.$store.dispatch('ToggleSideBar')
-    },
     logout() {
       this.$store.dispatch('LogOut').then(() => {
         location.reload() // 为了重新实例化vue-router对象 避免bug
@@ -51,10 +39,16 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+@import "../../../styles/variables.scss";
 .navbar {
-  height: 50px;
-  line-height: 50px;
+  line-height: 100px;
   border-radius: 0px !important;
+  background-color: $menuBg;
+  padding: 0 30px;
+  .nav-left {
+    height: 100%;
+    float: left
+  }
   .hamburger-container {
     line-height: 58px;
     height: 50px;
@@ -67,27 +61,27 @@ export default {
     top: 16px;
     color: red;
   }
-  .avatar-container {
-    height: 50px;
-    display: inline-block;
-    position: absolute;
-    right: 35px;
-    .avatar-wrapper {
-      cursor: pointer;
-      margin-top: 5px;
-      position: relative;
-      .user-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
+  .nav-right {
+      height: 100%;
+      float: right;
+      .avatar-wrap{
+        display: inline-block;
+        margin-right: 20px;
+        .user-avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+          display: inline-block;
+          vertical-align: middle;
+        }
       }
-      .el-icon-caret-bottom {
-        position: absolute;
-        right: -20px;
-        top: 25px;
-        font-size: 12px;
+      .logOut {
+        font-size: 20px;
+        display: inline-block;
+        vertical-align: middle;
+        color: #fff;
+        cursor: pointer;
       }
-    }
   }
 }
 </style>
